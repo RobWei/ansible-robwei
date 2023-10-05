@@ -1,0 +1,30 @@
+---
+- name: install bind
+  ansible.builtin.package:
+    name: bind
+    state: present
+
+- name: deploy named.conf
+  template:
+    src: named.conf.rh.j2
+    dest: /etc/named.conf
+  notify:
+    - restart bind
+
+- name: create own db file for each domain
+  template:
+    src: zone.j2
+    dest: /var/named/zone.{{item.key}}
+  tags: debug
+  with_dict: "{{domains}}"
+  notify:
+    - restart bind
+
+- name: create own db.servers. file for each domain
+  template:
+    src: zone.servers.j2
+    dest: /var/named/zone.servers.{{item.key}}
+  tags: debug
+  with_dict: "{{domains}}"
+  notify:
+    - restart bind

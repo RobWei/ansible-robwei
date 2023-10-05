@@ -1,0 +1,10 @@
+---
+- hosts: dns-servers
+  remote_user: root
+  roles:
+    - { role: dns-server, tags: "dns-server" }
+
+- hosts: all
+  remote_user: root
+  roles:
+    - { role: common, tags: "common" }

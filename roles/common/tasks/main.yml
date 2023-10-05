@@ -1,0 +1,6 @@
+---
+- name: "Setze MOTD"
+  ansible.builtin.template:
+    src: motd.j2
+    dest: /etc/motd.d/robwei-server
+
