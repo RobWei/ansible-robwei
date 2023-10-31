@@ -1,0 +1,66 @@
+---
+- name: Download and install or update packages using dpkg
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Download Google Chrome
+      get_url:
+        url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+        dest: /tmp/google-chrome-stable_current_amd64.deb
+
+    - name: Install or update Google Chrome
+      apt:
+        deb: /tmp/google-chrome-stable_current_amd64.deb
+        state: latest
+
+    - name: Download Rambox
+      get_url:
+        url: "https://rambox.app/api/download?os=linux&package=deb"
+        dest: /tmp/rambox.deb
+
+    - name: Install or update Rambox
+      apt:
+        deb: /tmp/rambox.deb
+        state: latest
+
+    - name: Download Visual Studio Code
+      get_url:
+        url: "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+        dest: /tmp/vscode.deb
+
+    - name: Install or update Visual Studio Code
+      apt:
+        deb: /tmp/vscode.deb
+        state: latest
+
+    - name: Add Spotify APT key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 4773BD5E130D1D45
+
+    - name: Add Spotify APT repository
+      apt_repository:
+        repo: 'deb http://repository.spotify.com stable non-free'
+        state: present
+
+    - name: Install Spotify
+      apt:
+        name: spotify-client
+        state: latest
+
+    - name: Install APT packages
+      apt:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - gnome-shell-extension-dashtodock
+        - vlc
+        - keepassxc
+        - firefox
+        - firefox-de
+        - thunderbird
+        - thunderbird-de
+        - veracrypt
+        - vim
+        - virt-manager
+        - remmina
