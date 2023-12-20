@@ -7,46 +7,45 @@
       get_url:
         url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
         dest: /tmp/google-chrome-stable_current_amd64.deb
+        backup: true
 
     - name: Install or update Google Chrome
       apt:
         deb: /tmp/google-chrome-stable_current_amd64.deb
-        state: latest
+        state: present
+
+    - name: Download Zoom
+      get_url:
+        url: "https://zoom.us/client/latest/zoom_amd64.deb"
+        dest: /tmp/zoom_amd64.deb
+        backup: true
+
+    - name: Install or update Zoom
+      apt:
+        deb: /tmp/zoom_amd64.deb
+        state: present
 
     - name: Download Rambox
       get_url:
         url: "https://rambox.app/api/download?os=linux&package=deb"
         dest: /tmp/rambox.deb
+        backup: true
 
     - name: Install or update Rambox
       apt:
         deb: /tmp/rambox.deb
-        state: latest
+        state: present
 
     - name: Download Visual Studio Code
       get_url:
         url: "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
         dest: /tmp/vscode.deb
+        backup: true
 
     - name: Install or update Visual Studio Code
       apt:
         deb: /tmp/vscode.deb
-        state: latest
-
-    - name: Add Spotify APT key
-      apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: 4773BD5E130D1D45
-
-    - name: Add Spotify APT repository
-      apt_repository:
-        repo: 'deb http://repository.spotify.com stable non-free'
         state: present
-
-    - name: Install Spotify
-      apt:
-        name: spotify-client
-        state: latest
 
     - name: Install APT packages
       apt:
@@ -54,13 +53,36 @@
         state: latest
       loop:
         - gnome-shell-extension-dashtodock
+        - gnome-shell-extension-prefs
         - vlc
         - keepassxc
-        - firefox
-        - firefox-de
+        - firefox-esr
+        - firefox-esr-l10n-de
         - thunderbird
-        - thunderbird-de
-        - veracrypt
+        - thunderbird-l10n-de
         - vim
         - virt-manager
         - remmina
+        - curl
+        - gpg
+        - htop
+        - vnstat
+        - network-manager-openconnect
+        - network-manager-openconnect-gnome
+        - nextcloud-desktop
+        - nextcloud-desktop-l10n
+
+    - name: "Spotify: Install GPG key"
+      ansible.builtin.shell:
+        cmd: curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+      args:
+        creates: /etc/apt/trusted.gpg.d/spotify.gpg
+    - name: "Spotify: Add APT repository"
+      ansible.builtin.apt_repository:
+        repo: "deb http://repository.spotify.com stable non-free"
+        filename: spotify
+        state: present
+    - name: "Spotify: Install"
+      ansible.builtin.apt:
+        name: spotify-client
+        state: present
