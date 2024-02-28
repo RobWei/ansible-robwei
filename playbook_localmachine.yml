@@ -36,6 +36,17 @@
         deb: /tmp/rambox.deb
         state: present
 
+    - name: Download Discord
+      get_url:
+        url: "https://discord.com/api/download?platform=linux&format=deb"
+        dest: /tmp/discord.deb
+        backup: true
+
+    - name: Install or update Discord
+      apt:
+        deb: /tmp/discord.deb
+        state: present
+
     - name: Download Visual Studio Code
       get_url:
         url: "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
