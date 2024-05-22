@@ -3,63 +3,78 @@
   hosts: localhost
   become: yes
   tasks:
+    - name: Create /opt/deb_dl/
+      ansible.builtin.file:
+        path: /opt/deb_dl
+        state: directory
+
     - name: Download Google Chrome
-      get_url:
+      ansible.builtin.get_url:
         url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-        dest: /tmp/google-chrome-stable_current_amd64.deb
+        dest: /opt/deb_dl/google-chrome-stable_current_amd64.deb
         backup: true
+      register: last_dl
 
     - name: Install or update Google Chrome
-      apt:
-        deb: /tmp/google-chrome-stable_current_amd64.deb
+      ansible.builtin.apt:
+        deb: /opt/deb_dl/google-chrome-stable_current_amd64.deb
         state: present
+      when: last_dl.changed
 
     - name: Download Zoom
-      get_url:
+      ansible.builtin.get_url:
         url: "https://zoom.us/client/latest/zoom_amd64.deb"
-        dest: /tmp/zoom_amd64.deb
+        dest: /opt/deb_dl/zoom_amd64.deb
         backup: true
+      register: last_dl
 
     - name: Install or update Zoom
-      apt:
-        deb: /tmp/zoom_amd64.deb
+      ansible.builtin.apt:
+        deb: /opt/deb_dl/zoom_amd64.deb
         state: present
+      when: last_dl.changed
 
     - name: Download Rambox
-      get_url:
+      ansible.builtin.get_url:
         url: "https://rambox.app/api/download?os=linux&package=deb"
-        dest: /tmp/rambox.deb
+        dest: /opt/deb_dl/rambox.deb
         backup: true
+      register: last_dl
 
     - name: Install or update Rambox
-      apt:
-        deb: /tmp/rambox.deb
+      ansible.builtin.apt:
+        deb: /opt/deb_dl/rambox.deb
         state: present
+      when: last_dl.changed
 
     - name: Download Discord
-      get_url:
+      ansible.builtin.get_url:
         url: "https://discord.com/api/download?platform=linux&format=deb"
-        dest: /tmp/discord.deb
+        dest: /opt/deb_dl/discord.deb
         backup: true
+      register: last_dl
 
     - name: Install or update Discord
-      apt:
-        deb: /tmp/discord.deb
+      ansible.builtin.apt:
+        deb: /opt/deb_dl/discord.deb
         state: present
+      when: last_dl.changed
 
     - name: Download Visual Studio Code
-      get_url:
+      ansible.builtin.get_url:
         url: "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-        dest: /tmp/vscode.deb
+        dest: /opt/deb_dl/vscode.deb
         backup: true
+      register: last_dl
 
     - name: Install or update Visual Studio Code
-      apt:
-        deb: /tmp/vscode.deb
+      ansible.builtin.apt:
+        deb: /opt/deb_dl/vscode.deb
         state: present
+      when: last_dl.changed
 
     - name: Install APT packages
-      apt:
+      ansible.builtin.apt:
         name: "{{ item }}"
         state: latest
       loop:
